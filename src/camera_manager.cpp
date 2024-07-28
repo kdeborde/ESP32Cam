@@ -56,5 +56,7 @@ esp_err_t camera_manager::initialize_camera()
     ledcSetup(LEDC_CHANNEL_0, 5000, 8);
     ledcAttachPin(FLASH_GPIO_NUM, LEDC_CHANNEL_0);
     ledcWrite(LEDC_CHANNEL_0, 0);
+    ledcSetup(LEDC_CHANNEL_1, 5000, 8);
+    ledcAttachPin(LED_GPIO_NUM, LEDC_CHANNEL_1);
     return err;
 }

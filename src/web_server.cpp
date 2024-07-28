@@ -3,6 +3,7 @@
 #include "img_converters.h"
 #include "fb_gfx.h"
 #include "web_server.h"
+#include <cJSON.h>
 #define PART_BOUNDARY "123456789000000000000987654321"
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
@@ -13,6 +14,8 @@ httpd_handle_t stream_httpd = NULL;
 void web_server::start_camera_server()
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+
+    // Main stream of camera
     config.server_port = 80;
     httpd_uri_t stream_uri = {
         .uri = "/stream",
@@ -20,11 +23,13 @@ void web_server::start_camera_server()
         .handler = stream_handler,
         .user_ctx = NULL};
 
+    // Flash LED control
     httpd_uri_t led_uri = {
         .uri = "/set_led",
         .method = HTTP_POST,
         .handler = led_handler,
         .user_ctx = NULL};
+
     if (httpd_start(&stream_httpd, &config) == ESP_OK)
     {
         Serial.println("Web Server Started at: " + WiFi.localIP().toString() + stream_uri.uri);
@@ -115,6 +120,10 @@ esp_err_t web_server::led_handler(httpd_req_t *req)
 {
     char buf[100];
     int ret, brightness;
+    const char *error_text;
+    ledc_channel_t led_channel;
+    String led_type;
+
     if ((ret = httpd_req_recv(req, buf, sizeof(buf) - 1)) <= 0)
     {
         if (ret == HTTPD_SOCK_ERR_TIMEOUT)
@@ -125,12 +134,44 @@ esp_err_t web_server::led_handler(httpd_req_t *req)
     }
     buf[ret] = '\0';
 
-    brightness = atoi(buf);
-    if (brightness < 0 || brightness > 255)
+    cJSON *json = cJSON_Parse(buf);
+    if (json == NULL)
     {
-        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Brightness value must be between 0 and 255");
+        error_text = "Invalid JSON";
     }
 
-    ledcWrite(LEDC_CHANNEL_0, brightness);
-    return httpd_resp_sendstr(req, "LED brightness updated");
+    cJSON *led_type_json = cJSON_GetObjectItem(json, "led");
+    cJSON *led_brightness_json = cJSON_GetObjectItem(json, "brightness");
+
+    if (!cJSON_IsString(led_type_json) || !cJSON_IsNumber(led_brightness_json))
+    {
+        error_text = "Invalid JSON";
+    }
+    led_type = led_type_json->valuestring;
+    brightness = led_brightness_json->valueint;
+    if (led_type == "flash")
+    {
+        led_channel = LEDC_CHANNEL_0;
+    }
+    else if (led_type == "led")
+    {
+        led_channel = LEDC_CHANNEL_1;
+    }
+    else
+    {
+        error_text = "Invalid led type. Options are 'flash' or 'led'";
+    }
+
+    if (brightness < 0 || brightness > 255)
+    {
+        error_text = "Invalid led_type";
+    }
+    if (error_text != NULL)
+    {
+        ledcWrite(led_channel, brightness);
+        cJSON_Delete(json);
+
+        return httpd_resp_sendstr(req, "LED brightness updated");
+    }
+    return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, error_text);
 }

@@ -6,6 +6,8 @@
 wifi_manager wifiManager;
 camera_manager cameraManager;
 web_server webServer;
+unsigned long lastLedCheckTime = 0;
+unsigned long ledCheckInterval = 3000;
 
 void setup()
 {
@@ -35,10 +37,24 @@ void setup()
 
 void loop()
 {
-  // This is a sanity check to make sure code is actually uploaded.
-  wifiManager.send_broadcast_message();
-  digitalWrite(LED_GPIO_NUM, HIGH);
-  delay(3000);
-  digitalWrite(LED_GPIO_NUM, LOW);
-  delay(3000);
+  if (!WiFi.isConnected())
+  {
+    for (int i = 0; i <= 255; i++)
+    {
+      ledcWrite(LEDC_CHANNEL_1, i);
+      delay(10);
+    }
+    for (int i = 255; i > 0; i--)
+    {
+      ledcWrite(LEDC_CHANNEL_1, i);
+      delay(10);
+    }
+    delay(200);
+  }
+  unsigned long currentTime = millis();
+  if (currentTime - lastLedCheckTime >= ledCheckInterval)
+  {
+    wifiManager.send_broadcast_message();
+  }
+  lastLedCheckTime = currentTime;
 }
