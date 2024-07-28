@@ -26,5 +26,4 @@ To connect to Wifi, copy credentials_template.h to credentials.h and update SSID
 High level concept map:
 https://lucid.app/lucidspark/15fd542f-7d08-480f-bd5f-1fec46ea0914/edit?viewport_loc=-2721%2C-1155%2C4661%2C2231%2C0_0&invitationId=inv_274d855a-f8f2-41c7-aaae-fa8b75bd8e9a
 
-![alt text](https://github.com/kdeborde/ESP32Cam/blob/main/ConceptMap.png)
 ![alt text](ConceptMap.png)
