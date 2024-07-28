@@ -14,15 +14,22 @@ void web_server::start_camera_server()
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
     config.server_port = 80;
-    httpd_uri_t index_uri = {
+    httpd_uri_t stream_uri = {
         .uri = "/stream",
         .method = HTTP_GET,
         .handler = stream_handler,
         .user_ctx = NULL};
+
+    httpd_uri_t led_uri = {
+        .uri = "/set_led",
+        .method = HTTP_POST,
+        .handler = led_handler,
+        .user_ctx = NULL};
     if (httpd_start(&stream_httpd, &config) == ESP_OK)
     {
-        Serial.println("Web Server Started at: " + WiFi.localIP().toString() + index_uri.uri);
-        httpd_register_uri_handler(stream_httpd, &index_uri);
+        Serial.println("Web Server Started at: " + WiFi.localIP().toString() + stream_uri.uri);
+        httpd_register_uri_handler(stream_httpd, &stream_uri);
+        httpd_register_uri_handler(stream_httpd, &led_uri);
     }
 }
 
@@ -102,4 +109,28 @@ esp_err_t web_server::stream_handler(httpd_req_t *req)
         }
     }
     return response;
+}
+
+esp_err_t web_server::led_handler(httpd_req_t *req)
+{
+    char buf[100];
+    int ret, brightness;
+    if ((ret = httpd_req_recv(req, buf, sizeof(buf) - 1)) <= 0)
+    {
+        if (ret == HTTPD_SOCK_ERR_TIMEOUT)
+        {
+            httpd_resp_send_408(req);
+        }
+        return ESP_FAIL;
+    }
+    buf[ret] = '\0';
+
+    brightness = atoi(buf);
+    if (brightness < 0 || brightness > 255)
+    {
+        return httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST, "Brightness value must be between 0 and 255");
+    }
+
+    ledcWrite(LEDC_CHANNEL_0, brightness);
+    return httpd_resp_sendstr(req, "LED brightness updated");
 }

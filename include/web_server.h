@@ -5,6 +5,7 @@ class web_server
 {
 private:
     static esp_err_t stream_handler(httpd_req_t *req);
+    static esp_err_t led_handler(httpd_req_t *req);
 
 public:
     static void start_camera_server();

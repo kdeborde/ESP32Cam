@@ -52,5 +52,9 @@ esp_err_t camera_manager::initialize_camera()
     {
         Serial.println("Camera init Successful");
     }
+    // Initialize LED control
+    ledcSetup(LEDC_CHANNEL_0, 5000, 8);
+    ledcAttachPin(FLASH_GPIO_NUM, LEDC_CHANNEL_0);
+    ledcWrite(LEDC_CHANNEL_0, 0);
     return err;
 }
