@@ -45,6 +45,7 @@ bool wifi_manager::connect()
 
 void wifi_manager::send_broadcast_message()
 {
+    // Eventually use this mechanism for connectivity?
     String message = "Camera IP: " + WiFi.localIP().toString();
     message += "\nCamera MAC Address: " + WiFi.macAddress();
     udp.beginPacket(broadcastIp, udpPort);

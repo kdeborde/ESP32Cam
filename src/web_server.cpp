@@ -140,6 +140,7 @@ esp_err_t web_server::led_handler(httpd_req_t *req)
         error_text = "Invalid JSON";
     }
 
+    // Doing it this way so we can add an option to turn off the status led also.
     cJSON *led_type_json = cJSON_GetObjectItem(json, "led");
     cJSON *led_brightness_json = cJSON_GetObjectItem(json, "brightness");
 

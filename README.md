@@ -6,6 +6,9 @@ FTDI Adapter - https://www.amazon.com/dp/B00IJXZQ7C?psc=1&ref=ppx_yo2ov_dt_b_pro
 
 Jumpers - https://www.amazon.com/dp/B01EV70C78?psc=1&ref=ppx_yo2ov_dt_b_product_details
 
+Development env:
+VS Code with PlatformIO extension.
+
 Pin connections:
 | ESP32-CAM | FTDI Adapter |
 |-----------|--------------|
@@ -20,8 +23,8 @@ When finished deploying, dissconnect the IO0 to GND pins and press RST button.
 
 To connect to Wifi, copy credentials_template.h to credentials.h and update SSID and Password.
 
-TODO's/Wishlist:
+High level concept map:
+https://lucid.app/lucidspark/15fd542f-7d08-480f-bd5f-1fec46ea0914/edit?viewport_loc=-2721%2C-1155%2C4661%2C2231%2C0_0&invitationId=inv_274d855a-f8f2-41c7-aaae-fa8b75bd8e9a
 
-1. Switch to something for wifi connectivity other than hardcoded credentials. Initially connect over bluetooth and send creds?
-
-2. Change from using static networking to DHCP and figure out how to broadcast it's address.
+![alt text](https://github.com/kdeborde/ESP32Cam/blob/main/ConceptMap.png)
+![alt text](ConceptMap.png)
