@@ -1,9 +1,11 @@
 #include <Arduino.h>
 #include "wifi_manager.h"
 #include "camera_manager.h"
+#include "web_server.h"
 
 wifi_manager wifiManager;
 camera_manager cameraManager;
+web_server webServer;
 
 void setup()
 {
@@ -23,7 +25,7 @@ void setup()
   {
     delay(1000);
     // TODO: Make sure this is successful.
-    cameraManager.startCameraServer();
+    webServer.start_camera_server();
   }
   else
   {
