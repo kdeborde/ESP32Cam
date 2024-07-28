@@ -87,7 +87,6 @@ static esp_err_t stream_handler(httpd_req_t *req)
 void camera_manager::startCameraServer()
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-    config.max_open_sockets = 5; // I'm only able to access camera from one device at a time. This might not be worth having.
     config.server_port = 80;
 
     httpd_uri_t index_uri = {

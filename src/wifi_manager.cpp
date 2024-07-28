@@ -1,8 +1,13 @@
 #include "wifi_manager.h"
 #include "credentials.h"
+#include <WiFiUdp.h>
 
-// Connect to wifi with hardcoded credentials.
-bool wifi_manager::devConnect()
+WiFiUDP udp;
+const unsigned int udpPort = 6535;           // The port to send the UDP broadcast message to
+const char *broadcastIp = "255.255.255.255"; // Broadcast IP address
+
+// Connect to wifi with hardcoded credentials for now.
+bool wifi_manager::connect()
 {
     WiFi.begin(ssid, password);
 
@@ -18,11 +23,11 @@ bool wifi_manager::devConnect()
 
     if (WiFi.status() == WL_CONNECTED)
     {
-        IPAddress static_ip(192, 168, 0, 13);
-        IPAddress gateway(192, 168, 0, 1);
-        IPAddress subnet(255, 255, 255, 0);
-        IPAddress dns(8, 8, 8, 8);
-        WiFi.config(static_ip, gateway, subnet, dns);
+        // IPAddress static_ip(192, 168, 0, 13);
+        // IPAddress gateway(192, 168, 0, 1);
+        // IPAddress subnet(255, 255, 255, 0);
+        // IPAddress dns(8, 8, 8, 8);
+        // WiFi.config(static_ip, gateway, subnet, dns);
         Serial.println("");
         Serial.print("Connected to ");
         Serial.println(ssid);
@@ -36,4 +41,15 @@ bool wifi_manager::devConnect()
         Serial.println("Failed to connect to WiFi");
         return false;
     }
+}
+
+void wifi_manager::send_broadcast_message()
+{
+    String message = "Camera IP: " + WiFi.localIP().toString();
+    message += "\nCamera MAC Address: " + WiFi.macAddress();
+    udp.beginPacket(broadcastIp, udpPort);
+    udp.write((const uint8_t *)message.c_str(), message.length());
+    udp.endPacket();
+
+    Serial.println("Broadcast message sent: " + message);
 }

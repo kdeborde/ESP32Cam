@@ -15,5 +15,5 @@ private:
 public:
     static camera_config_t get_camera_config();
     static esp_err_t initialize_camera();
-    void startCameraServer();
+    static void startCameraServer();
 };

@@ -8,7 +8,8 @@ class wifi_manager
 private:
     /* data */
 public:
-    bool devConnect();
+    bool connect();
+    void send_broadcast_message();
 };
 
 #endif

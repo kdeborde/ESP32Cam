@@ -9,7 +9,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(LED_GPIO_NUM, OUTPUT);
-  wifiManager.devConnect();
+  wifiManager.connect();
 
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 20)
@@ -34,6 +34,7 @@ void setup()
 void loop()
 {
   // This is a sanity check to make sure code is actually uploaded.
+  wifiManager.send_broadcast_message();
   digitalWrite(LED_GPIO_NUM, HIGH);
   delay(3000);
   digitalWrite(LED_GPIO_NUM, LOW);
