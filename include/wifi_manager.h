@@ -3,13 +3,13 @@
 
 #include <WiFi.h>
 
-class wifi_manager
+class WifiManager
 {
 private:
     /* data */
 public:
     bool connect();
-    void send_broadcast_message();
+    void sendBroadcastMessage();
 };
 
 #endif

@@ -3,9 +3,9 @@
 #include "camera_manager.h"
 #include "web_server.h"
 
-wifi_manager wifiManager;
-camera_manager cameraManager;
-web_server webServer;
+WifiManager wifiManager;
+CameraManager cameraManager;
+CamWebServer camWebServer;
 unsigned long lastLedCheckTime = 0;
 unsigned long ledCheckInterval = 3000;
 
@@ -23,11 +23,11 @@ void setup()
     attempts++;
   }
 
-  if (cameraManager.initialize_camera() == ESP_OK && WiFi.status() == WL_CONNECTED)
+  if (cameraManager.initializeCamera() == ESP_OK && WiFi.status() == WL_CONNECTED)
   {
     delay(1000);
     // TODO: Make sure this is successful.
-    webServer.start_camera_server();
+    camWebServer.startCameraServer();
   }
   else
   {
@@ -54,7 +54,7 @@ void loop()
   unsigned long currentTime = millis();
   if (currentTime - lastLedCheckTime >= ledCheckInterval)
   {
-    wifiManager.send_broadcast_message();
+    wifiManager.sendBroadcastMessage();
   }
   lastLedCheckTime = currentTime;
 }

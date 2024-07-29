@@ -11,7 +11,7 @@ static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %
 
 httpd_handle_t stream_httpd = NULL;
 
-void web_server::start_camera_server()
+void CamWebServer::startCameraServer()
 {
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
 
@@ -20,14 +20,14 @@ void web_server::start_camera_server()
     httpd_uri_t stream_uri = {
         .uri = "/stream",
         .method = HTTP_GET,
-        .handler = stream_handler,
+        .handler = streamHandler,
         .user_ctx = NULL};
 
     // Flash LED control
     httpd_uri_t led_uri = {
         .uri = "/set_led",
         .method = HTTP_POST,
-        .handler = led_handler,
+        .handler = ledHandler,
         .user_ctx = NULL};
 
     if (httpd_start(&stream_httpd, &config) == ESP_OK)
@@ -38,7 +38,7 @@ void web_server::start_camera_server()
     }
 }
 
-esp_err_t web_server::stream_handler(httpd_req_t *req)
+esp_err_t CamWebServer::streamHandler(httpd_req_t *req)
 {
     camera_fb_t *frame_buf = NULL;
     esp_err_t response = ESP_OK;
@@ -116,7 +116,7 @@ esp_err_t web_server::stream_handler(httpd_req_t *req)
     return response;
 }
 
-esp_err_t web_server::led_handler(httpd_req_t *req)
+esp_err_t CamWebServer::ledHandler(httpd_req_t *req)
 {
     char buf[100];
     int ret, brightness;

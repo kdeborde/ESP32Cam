@@ -7,7 +7,7 @@ const unsigned int udpPort = 6535;           // The port to send the UDP broadca
 const char *broadcastIp = "255.255.255.255"; // Broadcast IP address
 
 // Connect to wifi with hardcoded credentials for now.
-bool wifi_manager::connect()
+bool WifiManager::connect()
 {
     WiFi.begin(ssid, password);
 
@@ -43,7 +43,7 @@ bool wifi_manager::connect()
     }
 }
 
-void wifi_manager::send_broadcast_message()
+void WifiManager::sendBroadcastMessage()
 {
     // Eventually use this mechanism for connectivity?
     String message = "Camera IP: " + WiFi.localIP().toString();

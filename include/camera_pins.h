@@ -1,4 +1,3 @@
-
 // File taken from default CameraWebServer arduino ide project
 #if defined(CAMERA_MODEL_WROVER_KIT)
 #define PWDN_GPIO_NUM -1

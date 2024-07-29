@@ -1,6 +1,6 @@
 #include "camera_manager.h"
 
-camera_config_t camera_manager::get_camera_config()
+camera_config_t CameraManager::getCameraConfig()
 {
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
@@ -40,9 +40,9 @@ camera_config_t camera_manager::get_camera_config()
     return config;
 }
 
-esp_err_t camera_manager::initialize_camera()
+esp_err_t CameraManager::initializeCamera()
 {
-    camera_config_t config = get_camera_config();
+    camera_config_t config = getCameraConfig();
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK)
     {
